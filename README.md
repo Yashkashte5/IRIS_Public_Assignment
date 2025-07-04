@@ -115,13 +115,4 @@ The Postman collection is included as `FastAPI_Excel_Parser.postman_collection.j
 
 Base URL: `http://localhost:9090`
 
-## Submission
 
-Make sure your repository is public and contains the following:
-
-- `main.py`
-- `README.md`
-- `FastAPI_Excel_Parser.postman_collection.json`
-- `Data/capbudg.xls`
-
-Submit the GitHub repository link via the provided form before the deadline.
