@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "FastAPI Excel Parser",
+    "_postman_id": "d6c986b1-cc8d-4d9a-9db9-6d9f82f3f3af",
+    "description": "Test FastAPI endpoints for Excel Table Parser",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List All Tables",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/list_tables",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["list_tables"]
+        }
+      }
+    },
+    {
+      "name": "Get Table Rows",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/get_table_details?table_name=INITIAL INVESTMENT",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["get_table_details"],
+          "query": [
+            {
+              "key": "table_name",
+              "value": "INITIAL INVESTMENT"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Row Sum",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/row_sum?table_name=INITIAL INVESTMENT&row_name=Tax Credit (if any )=",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9090",
+          "path": ["row_sum"],
+          "query": [
+            {
+              "key": "table_name",
+              "value": "INITIAL INVESTMENT"
+            },
+            {
+              "key": "row_name",
+              "value": "Tax Credit (if any )="
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
