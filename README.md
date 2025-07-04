@@ -1,95 +1,127 @@
-# FastAPI Excel Processor Assignment
+# FastAPI Excel Processor
 
-## Overview
+This project is a FastAPI-based application that reads and parses an Excel file (`/Data/capbudg.xls`) and exposes endpoints to interact with tables and rows in the file.
 
-The primary goal of this assignment is to assess your understanding of API development using FastAPI, your problem-solving skills, your coding style, and your ability to present your work clearly and professionally.
+## Project Overview
 
-You are tasked with creating a FastAPI application that can read data from a given Excel sheet and expose a few endpoints to interact with this data.
+The main goal of this application is to demonstrate API development skills using FastAPI, along with parsing structured data from Excel and exposing it through clear, RESTful endpoints.
 
-## Tasks
+## Features
 
-Your main task is to develop a FastAPI application with the following functionalities:
+- Parses `.xls` Excel sheets into structured Python dictionaries
+- Automatically detects section headers and organizes data
+- API endpoints to list tables, extract rows, and calculate sums
 
-### 1. Excel Sheet Processing
-The application must be able to read a provided Excel sheet and parse its contents (`/Data/capbudg.xls`).
+## API Endpoints
 
-### 2. API Endpoints
-You need to implement the following FastAPI endpoints. Please use `http://localhost:9090` as the base URL for your endpoints.
+### 1. GET `/list_tables`
 
-#### a. `GET /list_tables`
-   - **Functionality:** This endpoint should list all the table names present in the uploaded/specified Excel sheet.
-   - **Response Example:**
-     ```json
-     {
-       "tables": ["Initial Investment", "Revenue Projections", "Operating Expenses"]
-     }
-     ```
+**Function:** Returns a list of all parsed table/section names from the Excel file.
 
-#### b. `GET /get_table_details`
-   - **Parameters:**
-     - `table_name: str` (Query parameter specifying the name of the table)
-   - **Functionality:** This endpoint should return the names of the rows for the selected table. These row names are typically the values found in the first column of that table.
-   - **Example:** If the user selects the "Initial Investment" table, the API should list the first column values like so:
-     ```json
-     {
-       "table_name": "Initial Investment",
-       "row_names": [
-         "Initial Investment=",
-         "Opportunity cost (if any)=",
-         "Lifetime of the investment",
-         "Salvage Value at end of project=",
-         "Deprec. method(1:St.line;2:DDB)=",
-         "Tax Credit (if any )=",
-         "Other invest.(non-depreciable)="
-       ]
-     }
-     ```
+**Example Response:**
+```json
+{
+  "tables": ["INITIAL INVESTMENT", "OPERATING CASHFLOWS", "BOOK VALUE & DEPRECIATION"]
+}
+```
 
-#### c. `GET /row_sum`
-   - **Parameters:**
-     - `table_name: str` (Query parameter specifying the name of the table)
-     - `row_name: str` (Query parameter specifying the name of the row, which must be one of the names returned by `/get_table_details`)
-   - **Functionality:** This endpoint should calculate and return the sum of all numerical data points in the specified row of the specified table.
-   - **Example:** If the `row_name` is `"Tax Credit (if any )="` for a table where this row contains the value `10` (or `10%`), the output should be:
-     ```json
-     {
-       "table_name": "Initial Investment",
-       "row_name": "Tax Credit (if any )=",
-       "sum": 10 
-     }
-     ```
-     *(Note: You can decide whether to include units like '%' in the response or just return the numerical sum. Please clarify your approach in your documentation.)*
+### 2. GET `/get_table_details?table_name=...`
 
-## Evaluation Criteria
+**Function:** Returns the list of row labels (typically first-column entries) under a specified table name.
 
-We will be evaluating your submission based on the following:
+**Example Response:**
+```json
+{
+  "table": "INITIAL INVESTMENT",
+  "rows": [
+    "Initial Investment=",
+    "Opportunity cost (if any)=",
+    "Lifetime of the investment",
+    "Salvage Value at end of project=",
+    "Deprec. method(1:St.line;2:DDB)=",
+    "Tax Credit (if any )=",
+    "Other invest.(non-depreciable)="
+  ]
+}
+```
 
-*   **Problem-Solving Skills:** Your ability to understand the requirements and implement a functional solution.
-*   **Coding Style:** Clarity, organization, and adherence to Python best practices. We expect well-structured, modular code, with docstrings, and robust error handling etc.
-*   **Presentation Style:** The quality and completeness of this `README.md` file (which you will update with your insights) and the Postman collection.
-*   **Documentation:** Ensure your code is well-documented.
+### 3. GET `/row_sum?table_name=...&row_name=...`
+
+**Function:** Calculates the sum of all numeric values in the specified row of the selected table.
+
+**Example Response:**
+```json
+{
+  "table": "INITIAL INVESTMENT",
+  "row": "Tax Credit (if any )=",
+  "sum": 10
+}
+```
+
+## Folder Structure
+
+```
+.
+├── main.py
+├── Data/
+│   └── capbudg.xls
+├── FastAPI_Excel_Parser.postman_collection.json
+├── README.md
+```
 
 ## Your Insights
 
-Please complete the following sections with your thoughts on the assignment.
-
 ### Potential Improvements
-*(Describe any ideas you have on how this application or assignment could be improved or extended. For example, handling different Excel formats, more advanced data operations, UI integration, etc.)*
+
+- Support uploading `.xlsx` files through an API endpoint
+- Provide an endpoint to refresh the Excel file in real-time
+- Normalize table and row names for case-insensitive access
+- Handle merged cells and formatting inconsistencies in complex Excel sheets
+- Add frontend support using Streamlit or a simple HTML UI
 
 ### Missed Edge Cases
-*(Identify any edge cases or scenarios that your current implementation might not handle or that were not explicitly covered in the requirements. For example, empty Excel files, tables with no numerical data, malformed table names, etc.)*
+
+- Empty or corrupt Excel files
+- Tables with no numeric data
+- Malformed or duplicate table names
+- Inconsistent first-column formats (e.g., blank labels or merged headers)
+- Unexpected special characters or encoding issues
 
 ## Testing
 
-To help us quickly test your application, please provide a Postman collection JSON.
+To test the application:
 
-*   **Base URL:** `http://localhost:9090` and the given endpoint names.
-*   **Postman Collection:** 
+1. Install dependencies:
+```bash
+pip install fastapi uvicorn pandas openpyxl xlrd
+```
 
-## Deadline
+2. Run the FastAPI server:
+```bash
+uvicorn main:app --reload --port 9090
+```
 
-Please submit your solution by **Saturday, May 10th, EOD**. Ensure you fill out the form provided in your email with the repository link (make sure the repository is public) and any other requested details. We plan to evaluate the submissions early Sunday morning and will schedule final interviews on the same day.
+3. Access API:
+- Swagger UI: http://localhost:9090/docs
+- Raw Endpoint: http://localhost:9090/list_tables
 
-Feel free to open an issue in this repo if you have any questions. Your honesty is appreciated in this test.
+## Postman Collection
 
-Good luck! We look forward to reviewing your submission. 
+The Postman collection is included as `FastAPI_Excel_Parser.postman_collection.json` in the root of the project. Import this file into Postman and run the following requests:
+
+- `GET /list_tables`
+- `GET /get_table_details?table_name=...`
+- `GET /row_sum?table_name=...&row_name=...`
+
+Base URL: `http://localhost:9090`
+
+## Submission
+
+Make sure your repository is public and contains the following:
+
+- `main.py`
+- `README.md`
+- `FastAPI_Excel_Parser.postman_collection.json`
+- `Data/capbudg.xls`
+
+Submit the GitHub repository link via the provided form before the deadline.
